@@ -1,0 +1,53 @@
+{% extends "main.html" %}
+{% block page_title %}Channels
+{% endblock %}
+
+{% block content %}
+    <!-- if usd logged in , display the form  -->
+    <div class="col-lg-8">
+        <form action='' method='post'>
+            <div style="min-height:400px">
+                <ul class="nav nav-tabs">
+                    {% for country in countrys %}
+                        <li {% if loop.index == 1 %} class="active" {% endif %}>
+                            <a data-toggle="tab" href="#menu{{loop.index}}">{{country.location }}
+                                <span class="badge">{{country.number}}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div
+                    class="tab-content">
+                    <!-- ths page is useing for display channels for users , if user is logged in, they can modify their subscription of channels -->
+
+                    {% for country in countrys %}
+                        <div class="tab-pane {% if loop.index == 1 %}active {% else %}fade{% endif %}" id="menu{{loop.index}}">
+                            {% for  channel in country.channels %}
+                                <!-- if not logged in all the link lead users to the login modal -->
+                                {% if not is_logged_in %}
+                                    <a data-target="#login" data-toggle="modal" href="">
+                                    {% else %}
+                                        <a href="">
+                                        {% endif %}
+                                        <label>
+                                            <img class="img-circle" src="images/{{channel.icon}}" alt="{{channel.name }}" title="{{channel.name }}">
+                                            {% if is_logged_in %}
+                                                <input class="inputimg" type="checkbox" name="channel_sub[]" value="{{channel.ch_id }}" {% for subscript in channels_subscript %} {% if channel.ch_id == subscript %} checked="checked" {% endif %} {% endfor %}>
+                                            {% endif %}
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div style="text-align:center" min-height:50px"">
+                        <br>
+                        {% if is_logged_in %}
+                            <button class="btn btn-danger btn-default" type="submit">Submit</button>
+                        {% endif %}
+                        <br>
+                        <br>
+                    </div>
+                </form>
+            </div>
+        {% endblock %}

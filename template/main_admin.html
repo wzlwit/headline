@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="View the latest news and breaking news today all over the world through whatever channel you like!" name="description">
+    <meta name="keywords" content="News, Hub, News dispatcher, News API, Subscription">
+    <meta name="author" content="Bianyu WAMG, Zhaolong Wang, Jialing Huang, Dadmehr Mohammad">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script src='js/myjs.js'></script>
+
+    <link rel="stylesheet" href="css/myCss.css">
+    <link href="./images/logo.ico" rel="icon">
+
+    <title> {% block page_title %}{% endblock %}</title>
+</head>
+
+<body>
+    <div class="container-fluid navbar-fixed-top" id="top">
+        <nav class="navbar navbar-inverse " id="autocollapse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand">HeadLine News</a>
+                </div>
+                <div class="collapse navbar-collapse navbar-right" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="admin.php">channel managenment</a></li>
+                        <li><a href="user_admin.php">user managenment</a></li>
+                        {% if is_logged_in %}
+                        <li><a href="logout.php">Logout</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    {% block content %}{% endblock %}
+    
+    <div class="container-fluid navbar-inverse page-footer visible-xs visible-sm navbar-fixed-bottom copyright"
+        id="footermini">
+        <div class="row  align-items-center ">
+            <div class="col-md-5 col-lg-4 ml-lg-0">
+                <div class="text-center text-md-right">
+                    <ul class="list-unstyled list-inline">
+                        <li class="list-inline-item">
+                            <a class="btn-floating btn-sm rgba-white-slight mx-1 col-sm-3">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="btn-floating btn-sm rgba-white-slight mx-1 col-sm-3">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="btn-floating btn-sm rgba-white-slight mx-1 col-sm-3">
+                                <i class="fab fa-weixin"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="btn-floating btn-sm rgba-white-slight mx-1 col-sm-3">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

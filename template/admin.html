@@ -1,0 +1,197 @@
+{% extends "main_admin.html" %}
+{% block page_title %}Admin {% endblock %}
+
+{% block content %}
+
+{% if openModal==3 %}
+<script>
+
+  $(function () {
+    $("#updateModal").modal({
+      keyboard: true
+    });
+  });
+</script>
+{% endif %}
+<div class="container">
+
+  <!-- modal for create a new channel -->
+  <div id="addModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" style="padding:35px 50px;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 id="msg_r"><span class="glyphicon glyphicon-lock"></span> create a new channel: </h4>
+        </div>
+        <div class="modal-body">
+          <div>
+            <form class="form-group" action="admin.php" method="POST" id="editchannel" enctype="multipart/form-data">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" id='name' name="name">
+                <small class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                <label>source</label>
+                <input type="text" class="form-control" id='source' name="source">
+                <small class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                <label>Icon</label>
+                <input type="file" class="form-control" name="icon" id="icon">
+                <small class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <select class="form-control" name="location" id='location'>
+
+                  {% for continent in continents %}
+                  <option value="{{continent}}"> {{continent}}</option>
+                  {%  endfor %}
+
+                </select>
+                <small class="form-text text-muted"></small>
+              </div>
+              <input type='hidden' name='action' value="create">
+              <button type='submit' class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modal end  -->
+
+  <!-- modal for  update a channel -->
+  <div id="updateModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" style="padding:35px 50px;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 id="cr"><span class="glyphicon glyphicon-lock"></span> Update a channel:</h4>
+        </div>
+        <div class="modal-body">
+          <div>
+            <form class="form-group" action="admin.php" method="POST" id='updateChannel' enctype="multipart/form-data">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" id='name' name="name" value="{{channel_update.name}}">
+                <small class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                <label>source</label>
+                <input type="text" class="form-control" id='source' name="source" value="{{channel_update.source}}">
+                <small class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                <label>Icon</label>
+                <img src="images/{{channel_update.icon}}" name='img' value='img'>
+                <input type="file" class="form-control" name="icon" id="icon">
+                <small class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                <label>Location {{channel_update.location}}</label>
+                <select class="form-control" name="location" id='location'>
+                  {% for continent in continents %}
+                  <option value="{{continent}}" {% if continent == channel_update.location %} selected {% endif %}>
+                    {{continent}}</option>
+                  {%  endfor %}
+                </select>
+                <small class="form-text text-muted"></small>
+              </div>
+              <input type="hidden" name='action' value='update'>
+              <input type="hidden" name='id' value="{{channel_update.ch_id}}">
+              <button type='submit' class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modal end -->
+  <div class="row ">
+    <div class="col-lg-8 col-md-9  col-sm-3  col-xs-3 text-center">
+    </div>
+    <div class="col-lg-4 col-md-3 col-sm-8 col-xs-8 tex-right " style="padding: 15px;">
+
+      <!-- search bar let admin search a channel -->
+      <form action="{{form_action}}" method="GET">
+        <div>
+          <div>
+            <div class="input-group">
+              <input type="text" name="topic" class="form-control" placeholder="Search a channel" />
+              <input type='hidden' name="action" value='search'>
+              <div class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-search"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- use Dynamic Tabs to display channels by location -->
+  <div>
+    <ul class="nav nav-tabs">
+      {% for country in countrys %}
+      <li {% if loop.index == 1 and search=='' %}class="active" {% endif %} {% if search !='' and search.location == country.location %} class="active" {% endif %}>
+
+        <a data-toggle="tab" href="#menu{{loop.index}}">{{country.location }}<span class="badge">{{country.number}}</span></a>
+      </li>
+      {% endfor %}
+      <li>
+        <a data-toggle="modal" data-target="#addModal" href=""><span class="glyphicon glyphicon-user"></span>Add a channel{{error}}</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      {% for country in countrys %}
+      <div id="menu{{loop.index}}" class="tab-pane 
+                        
+          {% if search !='' and search.location == country.location %}
+          active
+          {%elseif loop.index == 1 %} 
+          active
+          {%else%}
+          fade
+          {% endif %}
+          ">
+        <table class="table table-hover table-striped table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th>icon {{search.location }} {{ country.location}}</th>
+              <th>Name</th>
+              <th>source</th>
+              <th>location</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          {% for  channel in country.channels %}
+          <tr {%if channel.name==search.name%}style='background:red;' {%endif%}>
+            <td> <img src="images/{{channel.icon}}"></td>
+            <td>{{channel.name }}</td>
+            <td>{{channel.source }}</td>
+            <td>{{channel.location }}</td>
+            <td>
+              <a href="{{form_action}}?id={{channel.ch_id}}&del=1&location={{channel.location}}">delete</a>
+              <a href="{{form_action}}?id={{channel.ch_id}}">update</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <!-- end tabs -->
+
+
+
+
+
+
+</div>
+
+{% endblock %}

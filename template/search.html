@@ -1,0 +1,115 @@
+{% extends "main.html" %}
+{% block page_title %}Today's News
+{% endblock %}
+
+{% block content %}
+
+<div class="col-lg-8">
+        <div class="media">
+            <div class="media-left"></div>
+            <div class="media-body">
+                <div
+                    class="mediabody">
+
+                    <!-- welcome message according to type of users -->
+                    <h4 class="media-heading">
+                        {% if  is_logged_in %}
+                            welcome
+                            {{ session.user}}!
+
+                            {% if total==0 %}
+                                No news for :
+                                {{topic}}, change a topic.
+                            {% else %}
+
+                                Total
+                                {{total}}
+                                news for:
+                                {{topic}}
+                            {% endif %}
+
+                        {% else %}
+                            {% if total==0 %}
+                                No news for :
+                                {{topic}}, change a topic.
+                            {% else %}
+                                Total
+                                {{total}}
+                                news for:
+                                {{topic}}
+                                Login in to see more!
+                            {% endif  %}
+                        {% endif  %}
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <!-- Left-aligned -->
+        {% for key, result in results %}
+            {% if results|length >5 and key < 5 %}
+                <div class="media">
+
+                    <div class="media-body">
+                        <div class="mediabody">
+                            <h4 class="media-heading">From:
+                                {{result.source.name}}
+                            </h4><br>at
+                            {{result.publishedAt}}
+                            <p>
+                                <img
+                                src={% if result.urlToImage !='' %} "{{result.urlToImage}}" {% else %} "./images/news.png" {% endif %} title='{{result.description}}' class="media-object" style="width:80px">
+
+                                <!-- if not login , link them to login modal, if is a free user, first 3 news could be clicked , then alert window pop to 
+                                                                                                        call them to update their user type -->
+                                {% if not is_logged_in %}
+                                    <a data-target="#login" data-toggle="modal" href="">
+                                    {% elseif  session.type =='free' and loop.index>3  %}
+                                        <a href="#" onclick='return confirm("Update your account to see more news!")'>
+                                        {% else %}
+                                            <a href="{{result.url}}" target="blank">
+                                            {% endif %}
+                                            {{result.title}}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <span id="dotsearch">...</span>
+                <span id="moresearch" style="display: none;">
+
+                    {% for key, result in results %}
+                        {% if results|length > 5 and key >= 5%}
+                            <div class="media">
+                                <div class="media-body">
+                                    <div class="mediabody">
+                                        <h4 class="media-heading">From:
+                                            {{result.source.name}}
+                                        </h4><br>at
+                                        {{result.publishedAt}}
+                                        <p>
+                                            <img
+                                            src={% if result.urlToImage !='' %} "{{result.urlToImage}}" {% else %} "./images/announcement1.png" {% endif %} title='{{result.description}}' class="media-object" style="width:80px">
+                                            <!-- if not login , link them to login modal, if is a free user, first 3 news could be clicked , then alert window pop to 
+                                                                                                                                            call them to update their user type -->
+                                            {% if not is_logged_in %}
+                                                <a data-target="#login" data-toggle="modal" href="">
+                                                {% elseif  userType=='free' and loop.index>3  %}
+                                                    <a href="#" onclick='return confirm("Update your account to see more news!")'>
+                                                    {% else %}
+                                                        <a href="{{result.url}}" target="blank">
+                                                        {% endif %}
+                                                        {{result.title}}</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </p>
+                    <p>
+                        <button class='btn btn-warning' id="myBtnsearch" onclick="readMore('search')">More</button>
+                    </p>
+                </div>
+            {% endblock %}

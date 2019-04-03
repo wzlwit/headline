@@ -1,0 +1,87 @@
+{% extends "main.html" %}
+{% block page_title %}Today's News
+{% endblock %}
+
+{% block content %}
+    <div class="col-lg-8">
+        <div class="media">
+            <div class="media-left"></div>
+            <div class="media-body">
+                <div
+                    class="mediabody">
+                    <!-- welcome message according type of users -->
+                    <h4 class="media-heading" style="color:dodgerblue">
+                        {% if  is_logged_in %}
+                            welcome
+                            {{ session.user}}!
+                            {% if no_sub_message == '' %}
+                                Here is today's news:
+                            {% else %}
+                                Subscript your own channels!
+                            {% endif %}
+                        {% else %}
+                            Login in to see your channels!
+                        {% endif  %}
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- if user is not logged in, show random 3 channels with 3 news. for free user five subcriped channels with news -->
+        {% for channel in random_news %}
+            <div class="media">
+                <div class="media-left">
+                    <div class="avatar">
+                        <img class="media-object" src="images/{{channel.icon}}" style="width:60px"></div>
+                </div>
+                <div class="media-body">
+                    <div class="mediabody">
+                        <h4 class="media-heading">{{channel.name}}</h4>
+                        {% for key, news in channel.today_news %}
+                            {% if key < 3 %}
+                                <p>
+                                    <img
+                                    src={% if news.urlToImage !='' %} "{{news.urlToImage}}" {% else %} "images/{{channel.icon}}" {% endif %} title='{{news.description}}' class="media-object" style="width:80px">
+                                    <!-- if user not logged in , lead them to login modal -->
+                                    {% if not is_logged_in %}
+                                        <a data-target="#login" data-toggle="modal" href="">
+                                        {% else %}
+                                            <a href="{{news.url}}" target="blank">
+                                            {% endif %}
+                                            {{news.title}}</a>
+
+                                    {% endif %}
+                                {% endfor %}
+                                {% if  is_logged_in %}
+                                    <span id="dot{{loop.index}}">...</span>
+                                    <span id="more{{loop.index}}" style="display: none;">
+                                    {% endif %}
+
+                                    {% for key, news in channel.today_news %}
+                                        {% if key >= 3 %}
+
+                                            <img
+                                            src={% if news.urlToImage !='' %} "{{news.urlToImage}}" {% else %} "images/{{channel.icon}}" {% endif %} title='{{news.description}}' class="media-object" style="width:80px">
+                                            <!-- if user not logged in , lead them to login modal -->
+                                            {% if not is_logged_in %}
+                                                <a data-target="#login" data-toggle="modal" href="">
+                                                {% else %}
+                                                    <a href="{{news.url}}" target="blank">
+                                                    {% endif %}
+                                                    {{news.title}}</a>
+
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if  is_logged_in %}
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <button class='btn btn-warning' id="myBtn{{loop.index}}" onclick="readMore({{loop.index}})">More</button>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endblock %}

@@ -1,0 +1,57 @@
+{% extends "main.html" %}
+{% block page_title %}Today's News {% endblock %}
+
+{% block content %}
+
+<div class="col-lg-8">
+  <div class="media">
+    <div class="media-left">
+    </div>
+    <div class="media-body">
+      <div class="mediabody">
+        <!-- welcome message according type of users -->
+        <h4 class="media-heading">
+          {% if  is_logged_in %}
+          welcome {{ session.user}}!
+          Update your account:
+          {% endif  %}
+        </h4>
+        <P>
+          {{message}}
+        </P>
+      </div>
+    </div>
+  </div>
+
+  <!-- if user is not logged in, show random 3 channels with 3 news. for free user five subcriped channels with news -->
+
+  <div class="media">
+    <div class="media-body">
+      <div class="mediabody">
+        <form class="form-group" action="{{form_action }}" method="POST" name="singup">
+          <div class="form-group">
+            <label for="">User name:</label>
+            <input name='username' class="form-control" type="text" value="{{account.username}}" placeholder="Nice user name">
+          </div>
+          <div class="form-group">
+            <label for="">Password:</label>
+            <input name='psw_a' class="form-control" type="password" placeholder="new password ....... ">
+          </div>
+          <div class="form-group">
+            <label for="">Password again:</label>
+            <input name='psw_b' class="form-control" type="password" placeholder="new password........">
+          </div>
+          <div class="form-group">
+            <label for="">Email</label>
+            <input name='email' class="form-control" type="email" value="{{account.email}}" placeholder="Example:abc@abc.com">
+          </div>
+          <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Update</button>
+          <div class="modal-footer">
+            <input type="hidden" id="user" value="user">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

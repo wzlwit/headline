@@ -1,0 +1,400 @@
+<!-- main structure of this website -->
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <meta content="View the latest news and breaking news today all over the world through whatever channel you like!" name="description">
+        <meta name="keywords" content="News, Hub, News dispatcher, News API, Subscription">
+        <meta name="author" content="Bianyu WAMG, Zhaolong Wang, Jialing Huang, Dadmehr Mohammad">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" rel="stylesheet">
+        
+        <link href="css/myCss.css" rel="stylesheet">
+        <link href="./images/logo.ico" rel="icon">
+        
+        <title>
+            {% block page_title %}{% endblock %}
+        </title>
+    </head>
+
+    <body>
+        <!--Header-->
+        <div class="container-fluid navbar-fixed-top" id="top">
+            <nav class="navbar navbar-inverse " id="autocollapse">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button class="navbar-toggle" data-target="#myNavbar" data-toggle="collapse" type="button">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand">HeadLine News</a>
+                    </div>
+                    <div class="collapse navbar-collapse navbar-right" id="myNavbar">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="index.php">Home</a>
+                            </li>
+                            <li>
+                                <a href="channels.php">
+                                    Channels
+                                </a>
+                            </li>
+                            <!-- if not logged in, show link to sign up and login -->
+                            {% if not is_logged_in %}
+                                <li>
+                                    <a data-target="#register" data-toggle="modal" href="">
+                                        <span class="glyphicon glyphicon-user"></span>
+                                        Sign Up</a>
+                                </li>
+                                <li>
+                                    <a data-target="#login" data-toggle="modal" href="">
+                                        <span class="glyphicon glyphicon-log-in"></span>
+                                        Login</a>
+                                </li>
+                            {% else %}
+                                <!-- if logged in, show link to my account and logout  -->
+                                <li>
+                                    <a href="./account.php" id="logout">My account</a>
+                                </li>
+                                <li>
+                                    <a href="logout.php" id="logout">Logout</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Header End-->
+
+        <div
+            class="container">
+            <!-- login Modal -->
+            <div class="modal fade" id="login" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header" style="padding:35px 50px;">
+                            <button class="close" data-dismiss="modal" type="button">&times;</button>
+                            <h4 id="msg">
+                                <span class="glyphicon glyphicon-lock"></span>
+                                Login:
+                            </h4>
+                        </div>
+                        <div class="modal-body" style="padding:40px 50px;">
+                            <form action="" method="POST" name="login" onsubmit="return validation()" role="login">
+                                <div class="form-group">
+                                    <label for="email_login">
+                                        <span class="glyphicon glyphicon-user"></span>
+                                        Email</label>
+                                    <input class="form-control" id="email_login" placeholder="Enter email" type="text">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password_login">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        Password</label>
+                                    <input class="form-control" id="password_login" placeholder="Enter password" type="password">
+                                </div>
+                                <div>
+                                    <label><input id="remember" type="checkbox">Remember me</label>
+                                </div>
+                                <button class="btn btn-success btn-block" type="submit">
+                                    <span class="glyphicon glyphicon-off"></span>
+                                    Login</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger btn-default pull-left" data-dismiss="modal" type="submit">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                Cancel</button>
+                            <p>Not a member?
+                                <a data-dismiss="modal" data-target="#register" data-toggle="modal" href="">Sign up</a>
+                            </p>
+                            <p>Forgot
+                                <a href="">Password?</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- login modal end -->
+
+            <!--  sign up modal  -->
+            <div class="modal fade" id="register" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header" style="padding:35px 50px;">
+                            <button class="close" data-dismiss="modal" type="button">&times;</button>
+                            <h4 id="msg_r">
+                                <span class="glyphicon glyphicon-lock"></span>
+                                Sign Up:
+                            </h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <form action="" class="form-group" method="POST" name="singup" onsubmit="return signup()">
+                                <div class="form-group">
+                                    <label for="">User name:</label>
+                                    <input class="form-control" id='username_r' placeholder="Nice user name" type="text">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="">Password:</label>
+                                    <input class="form-control" id='psw_a' placeholder="....... " type="password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Password again:</label>
+                                    <input class="form-control" id='psw_b' placeholder="........" type="password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Email</label>
+                                    <input class="form-control" id='email_r' placeholder="Example:abc@abc.com" type="email">
+                                </div>
+                                <button class="btn btn-success btn-block" type="submit">
+                                    <span class="glyphicon glyphicon-off"></span>
+                                    Sign Up</button>
+                                <div class="modal-footer">
+                                    <input id="user" type="hidden" value="user">
+                                    <button class="btn btn-danger btn-default pull-left" data-dismiss="modal" type="submit">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                        Cancel</button>
+                                    <p>
+                                        Already a member?
+                                        <a data-dismiss="modal" data-target="#login" data-toggle="modal" href="">LogIn</a>
+                                    </p>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- sign up modal end -->
+
+            <div class="row">
+                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-xs-12 text-center">
+                    <h2>Latest and breaking news today!<br>Whatever channel you like!</h2>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 tex-right " style="padding-top:2vw; padding-bottom:2vw ">
+                    <form action="search.php" method="GET">
+                        <div>
+                            <div>
+                                <div class="input-group">
+                                    <input class="form-control" name='topic' placeholder="Search a topic" type="text" />
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                {% block content %}{% endblock %}
+                <div
+                    class="col-lg-4 ">
+                    <!-- show top 5 canada news  -->
+                    <div class="categ">
+                        <span style="text-align: center;    display: block; border-bottom: rgb(211, 203, 203)  solid 1px;">
+                            <strong>
+                                Today in Canada</strong>
+                        </span>
+
+                        <ul class="list-group">
+                            {% for key, canadanews in  canada_topfive.articles if key <5 %}
+                                <li class="list-group-item">
+                                    <span class="glyphicon glyphicon-pushpin"></span>
+                                    <a target="black" href="{{canadanews.url}}">{{  canadanews.title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- end top five -->
+                    <!-- top 5 channel  -->
+                    <div class="categ">
+                        <h4>Top 5 Channels in
+                            {{statistic.totalUsers}}
+                            Users</h4>
+                        {% for channel in statistic.topfive %}
+                            <div class="progress">
+                                {{channel.name}}
+                                <span class="badge">
+                                    {{channel.number}}</span>
+                                <div class="progress-bar {{channel.class}}" role="progressbar" aria-valuenow="{{channel.number*100/statistic.totalSub}}" aria-valuemin="0" aria-valuemax="100" style="width:{{channel.number * 100/statistic.totalSub}}%"></div>
+                            </div>
+
+                            {%endfor%}
+                        </div>
+
+                        <!-- reserved activities  -->
+
+                    </div>
+
+                </div>
+            </div>
+            <!-- footer-->
+            <div class="container-fluid navbar-inverse page-footer hidden-sm hidden-xs" id="footer">
+                <div class="row text-center text-md-left">
+
+                    <div class="col-md-4 col-lg-4 col-xl-4 well ">
+                        <h4 class="text-uppercase mb-4">Headine News</h4>
+                        <p>
+                            View the latest news and breaking news today
+                            <br>
+                            all over the world through whatever channel you like!
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-md-4 col-lg-4 col-xl-4  well ">
+                        <h4 class="text-uppercase">Useful links</h4>
+                        <p>
+                                {% if not is_logged_in %}
+                                <a data-target="#login" data-toggle="modal" href="">
+                                {% else %}
+
+                            <a href="account.php">
+                                {% endif %}
+                                
+                                Your Account</a>
+                        </p>
+
+                        <p>
+                            <a href="">About us</a>
+                        </p>
+                        <p>
+                            <a href="">Help</a>
+                        </p>
+                    </div>
+
+                    <div class="col-md-4 col-lg-4 col-xl-4  well">
+                        <h4 class="text-uppercase">Contact</h4>
+                        <p>
+                            <i class="fas fa-home mr-3"></i>
+                            Montreal, QC, Ca</p>
+                        <p>
+                            <a href="mailto:info@headlinenews.com">
+                                <i class="fas fa-envelope mr-3"></i>
+                                info@headlinenews.com</p>
+                        </a>
+                        <p>
+                            <a href="tel: 514000000">
+                                <i class="fas fa-phone mr-3"></i>
+                                + 01 000 000 000 000</p>
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="row  align-items-center copyright">
+
+
+                    <div class="col-md-7 col-lg-8">
+
+
+                        <p class="text-center text-md-left">
+                            © 2019 Copyright: Bianyu WAMG, Zhaolong Wang, Jialing Huang, Dadmehr Mohammad
+                            <a href="#">
+                                <strong>
+                                    www.headlinenews.com</strong>
+                            </a>
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-md-5 col-lg-4 ml-lg-0">
+
+                        <div class="text-center text-md-right">
+                            <ul class="list-unstyled list-inline">
+
+                                <li class="list-inline-item">
+                                    <a class="btn-floating btn-sm rgba-white-slight mx-1">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a class="btn-floating btn-sm rgba-white-slight mx-1">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a class="btn-floating btn-sm rgba-white-slight mx-1">
+                                        <i class="fab fa-weixin"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a class="btn-floating btn-sm rgba-white-slight mx-1">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="container-fluid navbar-inverse page-footer visible-xs visible-sm navbar-fixed-bottom copyright" id="footermini">
+
+                <div class="row  align-items-center ">
+
+                    <div class="col-md-5 col-lg-4 ml-lg-0">
+
+                        <div class="text-center text-md-right">
+                            <ul class="list-unstyled list-inline">
+
+                                <li class="list-inline-item">
+                                    <a class="btn-floating btn-sm rgba-white-slight mx-1 col-sm-3">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a class="btn-floating btn-sm rgba-white-slight mx-1 col-sm-3">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a class="btn-floating btn-sm rgba-white-slight mx-1 col-sm-3">
+                                        <i class="fab fa-weixin"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a class="btn-floating btn-sm rgba-white-slight mx-1 col-sm-3">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+            <script src='js/myjs.js'>
+
+
+
+</script>
+        </body>
+
+    </html>

@@ -1,0 +1,11 @@
+refactor using Fat Free (MVC)
+
+Account type: Free => Paid (up to unlimited channels);
+
+Password Forget: send by mail a link to reset password;
+
+Subscription Report: history of subscriptions (time, period, frequency);
+
+New List will show in pages (prev, next), currently just 'More' tag;
+
+Based on user's location to show the news in the part of "Today in @country" (top right)
